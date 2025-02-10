@@ -1,4 +1,4 @@
-package ai.plato.plato.model;
+package ai.plato.plato.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;

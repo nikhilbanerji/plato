@@ -1,5 +1,8 @@
 package ai.plato.plato.service;
 
+import ai.plato.plato.client.SpoonacularClient;
+import ai.plato.plato.dto.ComplexSearchParams;
+import ai.plato.plato.exception.NotFoundException;
 import ai.plato.plato.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

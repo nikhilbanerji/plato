@@ -1,4 +1,4 @@
-package ai.plato.plato.model;
+package ai.plato.plato.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,6 +1,6 @@
 package ai.plato.plato.config;
 
-import ai.plato.plato.service.SpoonacularClient;
+import ai.plato.plato.client.SpoonacularClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;

@@ -1,5 +1,6 @@
 package ai.plato.plato.controller;
 
+import ai.plato.plato.dto.ComplexSearchParams;
 import ai.plato.plato.model.*;
 import ai.plato.plato.service.RecipeService;
 import jakarta.validation.Valid;

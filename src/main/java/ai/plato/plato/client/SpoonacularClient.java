@@ -1,4 +1,4 @@
-package ai.plato.plato.service;
+package ai.plato.plato.client;
 
 import ai.plato.plato.model.*;
 import org.springframework.web.bind.annotation.PathVariable;
