@@ -4,11 +4,11 @@ import java.util.List;
 
 public record Ingredient(
         Integer id,
+        String image,
+        String name,
         String aisle,
         Double amount,
-        String image,
         List<String> meta,
-        String name,
         String original,
         String originalName,
         String unit,
@@ -19,4 +19,15 @@ public record Ingredient(
         String consistency, // e.g., "SOLID"
         String nameClean,   // e.g., "boquerones"
         Measures measures   // Contains detailed measurements in different systems
+) {}
+
+record Measures(
+        Measure us,
+        Measure metric
+) {}
+
+record Measure(
+        double amount,
+        String unitShort,
+        String unitLong
 ) {}

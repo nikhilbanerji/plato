@@ -60,6 +60,13 @@ public class RecipeController {
         return recipeService.getRecipeInformation(id);
     }
 
+    // Get analyzed recipe instructions by ID
+    @GetMapping("/recipes/{id}/analyzedInstructions")
+    List<AnalyzedInstructions> getAnalyzedRecipeInstructions(@PathVariable @Positive(message = "Recipe ID must be positive") Integer id) {
+        log.info("Controller: Request to fetch recipe instructions for id {}", id);
+        return recipeService.getAnalyzedRecipeInstructions(id);
+    }
+
     // Get recipe summary by ID
     @GetMapping("/recipes/{id}/summary")
     RecipeInformation getRecipeSummary(@PathVariable @Positive (message = "Recipe ID must be positive") Integer id) {

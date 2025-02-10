@@ -22,7 +22,7 @@ public record RecipeInformation(
         BigDecimal healthScore,
         BigDecimal spoonacularScore,
         BigDecimal pricePerServing,
-        List<Object> analyzedInstructions,
+        List<AnalyzedInstructions> analyzedInstructions,
         Boolean cheap,
         String creditsText,
         List<String> cuisines,

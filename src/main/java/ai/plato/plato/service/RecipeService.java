@@ -106,11 +106,11 @@ public class RecipeService {
             ComplexSearchResult response = spoonacularClient.getRecipesByComplexSearch(queryParams);
 
             if (response == null || response.results() == null || response.results().isEmpty()) {
-                throw new RecipeNotFoundException("No recipes found with parameters: " + queryParams);
+                throw new NotFoundException("No recipes found with parameters: " + queryParams);
             }
             return response;
         } catch (HttpClientErrorException.NotFound e) {
-            throw new RecipeNotFoundException("Recipes not found with parameters: " + queryParams, e);
+            throw new NotFoundException("Recipes not found with parameters: " + queryParams, e);
         } catch (Exception e) {
             log.error("Error calling Spoonacular API for complex search with parameters: " + queryParams, e);
             throw new RuntimeException("Error calling Spoonacular API", e);
@@ -139,11 +139,11 @@ public class RecipeService {
             log.info("Fetching recipes by entered ingredients: " + ingredients);
             List<RecipeSearchResult> searchResults = spoonacularClient.getRecipesByIngredients(queryParams);
             if (searchResults == null || searchResults.isEmpty()) {
-                throw new RecipeNotFoundException("Recipes with ingredients " + ingredients + " not found.");
+                throw new NotFoundException("Recipes with ingredients " + ingredients + " not found.");
             }
             return searchResults;
         } catch (HttpClientErrorException.NotFound e) {
-            throw new RecipeNotFoundException("Recipe with ingredients " + ingredients + " not found.", e);
+            throw new NotFoundException("Recipe with ingredients " + ingredients + " not found.", e);
         } catch (Exception e) {
             log.error("Error calling Spoonacular API for recipe information", e);
             throw new RuntimeException("Error calling Spoonacular API", e);
@@ -176,11 +176,11 @@ public class RecipeService {
             log.info("Fetching {} random recipes", number);
             RecipeInformations recipeInformations = spoonacularClient.getRandomRecipes(queryParams);
             if (recipeInformations == null || recipeInformations.recipes() == null ||  recipeInformations.recipes().isEmpty()) {
-                throw new RecipeNotFoundException("Recipes not found.");
+                throw new NotFoundException("Recipes not found.");
             }
             return recipeInformations;
         } catch (HttpClientErrorException.NotFound e) {
-            throw new RecipeNotFoundException("Recipes not found.", e);
+            throw new NotFoundException("Recipes not found.", e);
         } catch (Exception e) {
             log.error("Error calling Spoonacular API for random recipes", e);
             throw new RuntimeException("Error calling Spoonacular API", e);
@@ -193,11 +193,28 @@ public class RecipeService {
             log.info("Fetching recipe information for id = {}", id);
             RecipeInformation recipe = spoonacularClient.getRecipeInformation(id);
             if (recipe == null) {
-                throw new RecipeNotFoundException("Recipe with id " + id + " not found.");
+                throw new NotFoundException("Recipe with id " + id + " not found.");
             }
             return recipe;
         } catch (HttpClientErrorException.NotFound e) {
-            throw new RecipeNotFoundException("Recipe with id " + id + " not found.", e);
+            throw new NotFoundException("Recipe with id " + id + " not found.", e);
+        } catch (Exception e) {
+            log.error("Error calling Spoonacular API for recipe information", e);
+            throw new RuntimeException("Error calling Spoonacular API", e);
+        }
+    }
+
+    // Get analyzed recipe instructions by ID
+    public List<AnalyzedInstructions> getAnalyzedRecipeInstructions(Integer id) {
+        try {
+            log.info("Fetching recipe instructions for id = {}", id);
+            List<AnalyzedInstructions> analyzedInstructions = spoonacularClient.getAnalyzedRecipeInstructions(id);
+            if (analyzedInstructions == null || analyzedInstructions.isEmpty()) {
+                throw new NotFoundException("Analyzed instructions for recipe with id " + id + " not found.");
+            }
+            return analyzedInstructions;
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new NotFoundException("Analyzed instructions for recipe with id " + id + " not found.");
         } catch (Exception e) {
             log.error("Error calling Spoonacular API for recipe information", e);
             throw new RuntimeException("Error calling Spoonacular API", e);
@@ -210,11 +227,11 @@ public class RecipeService {
             log.info("Fetching recipe summary for id = {}", id);
             RecipeInformation recipe = spoonacularClient.getRecipeSummary(id);
             if (recipe == null) {
-                throw new RecipeNotFoundException("Recipe with id " + id + " not found.");
+                throw new NotFoundException("Recipe with id " + id + " not found.");
             }
             return recipe;
         } catch (HttpClientErrorException.NotFound e) {
-            throw new RecipeNotFoundException("Recipe with id " + id + " not found.", e);
+            throw new NotFoundException("Recipe with id " + id + " not found.", e);
         } catch (Exception e) {
             log.error("Error calling Spoonacular API for recipe information", e);
             throw new RuntimeException("Error calling Spoonacular API", e);

@@ -26,6 +26,10 @@ public interface SpoonacularClient {
     @GetExchange("/recipes/{id}/information")
     RecipeInformation getRecipeInformation(@PathVariable Integer id);
 
+    // Get analyzed recipe instructions by ID
+    @GetExchange("/recipes/{id}/analyzedInstructions")
+    List<AnalyzedInstructions> getAnalyzedRecipeInstructions(@PathVariable Integer id);
+
     // Get recipe summary by ID
     @GetExchange("/recipes/{id}/summary")
     RecipeInformation getRecipeSummary(@PathVariable Integer id);
