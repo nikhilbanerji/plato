@@ -25,7 +25,7 @@ public record RecipeInformation(
         List<AnalyzedInstructions> analyzedInstructions,
         Boolean cheap,
         String creditsText,
-        List<String> cuisines,
+        Set<Cuisine> cuisines,
         Boolean dairyFree,
         List<String> diets,
         String gaps,

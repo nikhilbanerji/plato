@@ -6,8 +6,8 @@ import java.util.List;
  * Record representing the response from the Spoonacular complexSearch endpoint.
  */
 public record ComplexSearchResult(
-        int offset,
-        int number,
+        Integer offset,
+        Integer number,
         List<RecipeSearchResult> results,
-        int totalResults
+        Integer totalResults
 ) {}

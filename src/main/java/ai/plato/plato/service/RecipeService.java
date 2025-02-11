@@ -12,6 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
@@ -28,17 +29,29 @@ public class RecipeService {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("query", params.query());
 
-        if (params.cuisine() != null && !params.cuisine().trim().isEmpty()) {
-            queryParams.put("cuisine", params.cuisine());
+        if (params.cuisine() != null && !params.cuisine().isEmpty()) {
+            // Convert enum list to comma-separated string
+            String cuisineParam = params.cuisine().stream()
+                    .map(Enum::name)
+                    .collect(Collectors.joining(","));
+            queryParams.put("cuisine", cuisineParam);
         }
-        if (params.excludeCuisine() != null && !params.excludeCuisine().trim().isEmpty()) {
-            queryParams.put("excludeCuisine", params.excludeCuisine());
+        if (params.excludeCuisine() != null && !params.excludeCuisine().isEmpty()) {
+            // Convert enum list to comma-separated string
+            String excludeCuisineParam = params.excludeCuisine().stream()
+                    .map(Enum::name)
+                    .collect(Collectors.joining(","));
+            queryParams.put("excludeCuisine", excludeCuisineParam);
         }
         if (params.diet() != null && !params.diet().trim().isEmpty()) {
             queryParams.put("diet", params.diet());
         }
-        if (params.intolerances() != null && !params.intolerances().trim().isEmpty()) {
-            queryParams.put("intolerances", params.intolerances());
+        if (params.intolerances() != null && !params.intolerances().isEmpty()) {
+            // Convert enum list to comma-separated string
+            String intoleranceParam = params.intolerances().stream()
+                    .map(Enum::name)
+                    .collect(Collectors.joining(","));
+            queryParams.put("intolerances", intoleranceParam);
         }
         if (params.equipment() != null && !params.equipment().trim().isEmpty()) {
             queryParams.put("equipment", params.equipment());
