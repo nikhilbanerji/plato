@@ -1,0 +1,38 @@
+/* SearchBar.module.css */
+
+.searchContainer {
+    position: relative;
+    width: 60%; /* or 50-70% as you want */
+    max-width: 800px;
+    margin: 0 auto; /* centers horizontally */
+}
+
+.inputGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.searchInput {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+.searchButton {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.resultsContainer {
+    margin-top: 0.5rem;
+    background: #eb7a34;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.resultItem {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #ccc;
+}

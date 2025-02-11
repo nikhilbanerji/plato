@@ -1,0 +1,23 @@
+/* LandingPage.module.css */
+
+.landingWrapper {
+    width: 100%;
+    min-height: 100vh;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 2rem;
+    box-sizing: border-box;
+}
+
+.content {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 1rem;
+}
+
+.title {
+    margin-bottom: 1rem;
+    color: #333;
+}
