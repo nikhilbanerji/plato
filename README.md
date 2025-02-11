@@ -1,2 +1,2 @@
-# plato
-Plato is a recipe recommendation application that suggests recipes depending on the ingredients in your pantry, or the ingredients typed into the search bar. It refines its suggestions based on your viewing history, searches and like/dislike ratings for recipes.
+# Plato
+Plato is a comprehensive digital platform designed to serve as a one-stop hub for all things food-related. The platform makes it easy to discover recipes based on your pantry’s contents or specific ingredients you want to use, and also offers tailored meal-planning tools. By analyzing user preferences, viewing history, and search patterns, it generates personalized recipe recommendations to help users explore new dishes and find meals they’ll love. Looking ahead, we plan to introduce a conversational agent that can actively guide users through recipe selection, refine their prompts, and offer real-time suggestions for a more interactive and convenient cooking experience.
