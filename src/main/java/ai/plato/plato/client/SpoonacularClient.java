@@ -7,6 +7,7 @@ import org.springframework.web.service.annotation.GetExchange;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface SpoonacularClient {
 
@@ -33,4 +34,12 @@ public interface SpoonacularClient {
     // Get recipe summary by ID
     @GetExchange("/recipes/{id}/summary")
     RecipeInformation getRecipeSummary(@PathVariable Integer id);
+
+    // Search for ingredients
+    @GetExchange("/food/ingredients/search")
+    IngredientSearchResult getIngredients(@RequestParam Map<String, String> params);
+
+    // Autocomplete ingredient search
+    @GetExchange("food/ingredients/autocomplete")
+    Set<Ingredient> autocompleteIngredientSearch(@RequestParam Map<String, String> params);
 }
