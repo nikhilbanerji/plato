@@ -37,7 +37,7 @@ public class IngredientService {
             Integer minCarbsPercent,
             Integer maxCarbsPercent,
             Boolean metaInformation,
-            String intolerances,
+            Set<Intolerance> intolerances,
             String sort,
             String sortDirection,
             String language,
@@ -74,7 +74,11 @@ public class IngredientService {
             queryParams.put("maxCarbsPercent", maxCarbsPercent.toString());
         }
         if (intolerances != null && !intolerances.isEmpty()) {
-            queryParams.put("intolerances", intolerances);
+            // Convert enum list to comma-separated string
+            String intoleranceParam = intolerances.stream()
+                    .map(Enum::name)
+                    .collect(Collectors.joining(","));
+            queryParams.put("intolerances", intoleranceParam);
         }
         if (sort != null && !sort.isEmpty()) {
             queryParams.put("sort", sort);
@@ -100,7 +104,7 @@ public class IngredientService {
             Integer number,
             String language,
             Boolean metaInformation,
-            List<Intolerance> intolerances
+            Set<Intolerance> intolerances
     ) {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("query", query);

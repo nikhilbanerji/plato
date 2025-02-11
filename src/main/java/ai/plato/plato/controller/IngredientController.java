@@ -39,7 +39,7 @@ public class IngredientController {
             @RequestParam(name = "minCarbsPercent", required = false) Integer minCarbsPercent,
             @RequestParam(name = "maxCarbsPercent", required = false) Integer maxCarbsPercent,
             @RequestParam(name = "metaInformation", required = false, defaultValue = "false") Boolean metaInformation,
-            @RequestParam(name = "intolerances", required = false) String intolerances,
+            @RequestParam(name = "intolerances", required = false) Set<Intolerance> intolerances,
             @RequestParam(name = "sort", required = false) String sort,
             @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection,
             @RequestParam(name = "language", required = false, defaultValue = "en") String language,
@@ -59,7 +59,7 @@ public class IngredientController {
             @RequestParam(name = "number", required = false, defaultValue = "10") @Range(min = 1, max = 100) Integer number,
             @RequestParam(name = "language", required = false, defaultValue = "en") String language,
             @RequestParam(name = "metaInformation", required = false, defaultValue = "true") Boolean metaInformation,
-            @RequestParam(name = "intolerances", required = false) List<Intolerance> intolerances
+            @RequestParam(name = "intolerances", required = false) Set<Intolerance> intolerances
     ) {
         log.info("Controller: Request to autocomplete ingredient search with query: {}", query);
         return ingredientService.autocompleteIngredientSearch(query, number, language, metaInformation, intolerances);

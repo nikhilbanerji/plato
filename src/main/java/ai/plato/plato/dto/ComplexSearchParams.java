@@ -1,18 +1,22 @@
 package ai.plato.plato.dto;
 
+import ai.plato.plato.model.Cuisine;
+import ai.plato.plato.model.Intolerance;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+
+import java.util.Set;
 
 /**
  * DTO representing all accepted query parameters for the complexSearch endpoint.
  * Only the "query" field is required.
  */
 public record ComplexSearchParams(
-        @NotBlank(message = "Query is required") String query,            // The natural language recipe search query (required).
-        String cuisine,                 // Optional: Cuisine(s) to include (comma-separated, OR).
-        String excludeCuisine,          // Optional: Cuisine(s) to exclude (comma-separated, AND).
+        @NotBlank(message = "Query is required") String query,// The natural language recipe search query (required).
+        Set<Cuisine> cuisine,                 // Optional: Cuisine(s) to include (comma-separated, OR).
+        Set<Cuisine> excludeCuisine,          // Optional: Cuisine(s) to exclude (comma-separated, AND).
         String diet,                    // Optional: Diet(s) for which the recipes must be suitable.
-        String intolerances,            // Optional: Comma-separated list of intolerances to avoid.
+        Set<Intolerance> intolerances,            // Optional: Comma-separated list of intolerances to avoid.
         String equipment,               // Optional: Required equipment (comma-separated, OR).
         String includeIngredients,      // Optional: Ingredients that must be included.
         String excludeIngredients,      // Optional: Ingredients that must be excluded.
