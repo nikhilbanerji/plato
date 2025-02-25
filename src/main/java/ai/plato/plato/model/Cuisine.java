@@ -31,6 +31,10 @@ public enum Cuisine {
     SOUTHERN("Southern"),
     SPANISH("Spanish"),
     THAI("Thai"),
+    CREOLE("Creole"),
+    BBQ("Bbq"),
+    ENGLISH("English"),
+    SOUTH_AMERICAN("South American"),
     VIETNAMESE("Vietnamese");
 
     private final String displayName;

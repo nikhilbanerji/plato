@@ -98,9 +98,7 @@
 //
 // export default SearchBar;
 
-import React, { useState, useEffect, useRef } from 'react';
-import { useClickOutside } from '../../hooks/useClickOutside';
-import { ComplexSearchResult } from './types';
+import React, { useState } from 'react';
 import styles from './SearchBar.module.css';
 
 interface SearchBarProps {
@@ -109,10 +107,6 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ setRecipes }) => {
     const [query, setQuery] = useState('');
-    const [error, setError] = useState<string | null>(null);
-    const searchContainerRef = useRef<HTMLDivElement>(null);
-
-    useClickOutside(searchContainerRef, () => setQuery(''));
 
     async function fetchRecipes(searchTerm: string) {
         try {
@@ -122,13 +116,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ setRecipes }) => {
             if (!response.ok) {
                 throw new Error(`Server responded with ${response.status}`);
             }
-            const data: ComplexSearchResult = await response.json();
-            setRecipes(data.results);
-            setError(null);
+            const data = await response.json();
+
+            const formattedRecipes = data.results.map((recipe: any) => ({
+                id: recipe.id,
+                title: recipe.title,
+                image: recipe.image
+            }));
+
+            setRecipes(formattedRecipes);
         } catch (error) {
             console.error(error);
             setRecipes([]);
-            setError("Failed to load search results.");
         }
     }
 
@@ -145,7 +144,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ setRecipes }) => {
     };
 
     return (
-        <div ref={searchContainerRef} className={styles.searchBarContainer}>
+        <div className={styles.searchBarContainer}>
             <input
                 type="text"
                 placeholder="Search recipes..."
@@ -162,4 +161,3 @@ const SearchBar: React.FC<SearchBarProps> = ({ setRecipes }) => {
 };
 
 export default SearchBar;
-

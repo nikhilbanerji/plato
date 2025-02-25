@@ -34,11 +34,13 @@
 // export default LandingPage;
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // For navigation
 import SearchBar from '../SearchBar/SearchBar';
 import styles from './LandingPage.module.css';
 
 const LandingPage: React.FC = () => {
-    const [recipes, setRecipes] = useState<Array<{ id: number; title: string; image?: string; ingredients?: string }>>([]);
+    const [recipes, setRecipes] = useState<Array<{ id: number; title: string; image?: string }>>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchRandomRecipes();
@@ -51,7 +53,14 @@ const LandingPage: React.FC = () => {
                 throw new Error(`Server responded with ${response.status}`);
             }
             const data = await response.json();
-            setRecipes(data.recipes);
+
+            const formattedRecipes = data.recipes.map((recipe: any) => ({
+                id: recipe.id,
+                title: recipe.title,
+                image: recipe.image,
+            }));
+
+            setRecipes(formattedRecipes);
         } catch (error) {
             console.error(error);
         }
@@ -66,12 +75,9 @@ const LandingPage: React.FC = () => {
 
             <div className={styles.recipeGrid}>
                 {recipes.map((recipe) => (
-                    <div key={recipe.id} className={styles.recipeCard}>
+                    <div key={recipe.id} className={styles.recipeCard} onClick={() => navigate(`/recipe/${recipe.id}`)}>
                         <img src={recipe.image || 'default-image.jpg'} alt={recipe.title} className={styles.recipeImage} />
                         <h3 className={styles.recipeTitle}>{recipe.title}</h3>
-                        <p className={styles.recipeIngredients}>
-                            {recipe.ingredients ? recipe.ingredients.slice(0, 50) + '...' : 'Ingredients not available'}
-                        </p>
                     </div>
                 ))}
             </div>
@@ -80,4 +86,3 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
-

@@ -1,10 +1,17 @@
-// src/App.tsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './components/LandingPage/LandingPage';
+import RecipeDetails from './components/RecipeDetails/RecipeDetails';
 
-function App() {
+const App: React.FC = () => {
     return (
-        <LandingPage />
+        <Router>
+            <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/recipe/:id" element={<RecipeDetails />} />
+            </Routes>
+        </Router>
     );
-}
+};
 
 export default App;
