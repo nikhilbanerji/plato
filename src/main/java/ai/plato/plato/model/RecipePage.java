@@ -9,9 +9,6 @@ public class RecipePage {
     private Integer pageSize;
     private Long totalDocs;
 
-    public RecipePage() {
-    }
-
     public RecipePage(List<Recipe> recipes, Integer pageNumber, Integer pageSize, Long totalDocs) {
         this.recipes = recipes;
         this.pageNumber = pageNumber;

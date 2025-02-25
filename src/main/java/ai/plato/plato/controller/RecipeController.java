@@ -5,6 +5,7 @@ import ai.plato.plato.model.*;
 import ai.plato.plato.service.RecipeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import org.hibernate.validator.constraints.Range;
 import org.slf4j.Logger;
@@ -78,10 +79,22 @@ public class RecipeController {
     // Fetch all recipes by page number and page size
     @GetMapping("")
     RecipePage findAll(
-            @RequestParam(name = "page", required = false, defaultValue = "1") Integer pageNumber,
-            @RequestParam(name = "size", required = false, defaultValue = "20") Integer pageSize
+            @RequestParam(name = "page", required = false, defaultValue = "1") @Positive Integer pageNumber,
+            @RequestParam(name = "size", required = false, defaultValue = "20") @Range(min = 20, max = 100) Integer pageSize
     ) {
         log.info("Controller: Request to fetch " +pageSize + " recipes on page " + pageNumber);
         return recipeService.findAll(pageNumber, pageSize);
+    }
+
+    // Search for recipes by ingredients
+    @GetMapping("/searchByIngredients")
+    RecipePage findByIngredients (
+            @RequestParam(name = "ingredients", required = true) @NotEmpty(message = "Ingredients required") List<String> ingredients,
+            @RequestParam(name = "page", required = false, defaultValue = "1") @Positive Integer pageNumber,
+            @RequestParam(name = "size", required = false, defaultValue = "20") @Range(min = 20, max = 100) Integer pageSize,
+            @RequestParam(name = "matchType", required = false, defaultValue = "partial") String matchType
+    ) {
+        log.info("Controller: Request to fetch " + pageSize + " recipes with " + matchType + " match on page " + pageNumber + " for ingredients: " + ingredients);
+        return recipeService.findByIngredients(ingredients, pageNumber, pageSize, matchType);
     }
 }
