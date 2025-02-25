@@ -3,12 +3,18 @@ package ai.plato.plato.service;
 import ai.plato.plato.client.SpoonacularClient;
 import ai.plato.plato.dto.ComplexSearchParams;
 import ai.plato.plato.exception.NotFoundException;
+import ai.plato.plato.exception.RecipeSearchException;
 import ai.plato.plato.model.*;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +25,11 @@ public class RecipeService {
 
     private static final Logger log = LoggerFactory.getLogger(RecipeService.class);
     private final SpoonacularClient spoonacularClient;
+    private final SolrClient solrClient;
 
-    public RecipeService(SpoonacularClient spoonacularClient) {
+    public RecipeService(SpoonacularClient spoonacularClient, SolrClient solrClient) {
         this.spoonacularClient = spoonacularClient;
+        this.solrClient = solrClient;
     }
 
     // Get recipes by complex search
@@ -251,6 +259,31 @@ public class RecipeService {
         } catch (Exception e) {
             log.error("Error calling Spoonacular API for recipe information", e);
             throw new RuntimeException("Error calling Spoonacular API", e);
+        }
+    }
+
+    // Retrieve all recipes by page number and size of page
+    public RecipePage findAll(Integer pageNumber, Integer pageSize) {
+        final SolrQuery query = new SolrQuery("*:*");
+        query.setStart(pageNumber * pageSize);
+        query.setRows(pageSize);
+
+        try {
+            log.info("Fetching " +pageSize + " recipes on page " + pageNumber);
+
+            final QueryResponse response = solrClient.query(query);
+
+            long totalDocs = response.getResults().getNumFound();
+            boolean exact = response.getResults().getNumFoundExact();
+            List<Recipe> recipes = response.getBeans(Recipe.class);
+
+            if (recipes == null || recipes.isEmpty()) {
+                throw new NotFoundException("No recipes found");
+            }
+
+            return new RecipePage(recipes, pageNumber, pageSize, totalDocs);
+        } catch (IOException | SolrServerException e) {
+            throw new RecipeSearchException("Failed to query Solr", e);
         }
     }
 }

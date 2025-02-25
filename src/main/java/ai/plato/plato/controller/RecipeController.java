@@ -74,4 +74,14 @@ public class RecipeController {
         log.info("Controller: Request to fetch recipe summary for id {}", id);
         return recipeService.getRecipeSummary(id);
     }
+
+    // Fetch all recipes by page number and page size
+    @GetMapping("")
+    RecipePage findAll(
+            @RequestParam(name = "page", required = false, defaultValue = "1") Integer pageNumber,
+            @RequestParam(name = "size", required = false, defaultValue = "20") Integer pageSize
+    ) {
+        log.info("Controller: Request to fetch " +pageSize + " recipes on page " + pageNumber);
+        return recipeService.findAll(pageNumber, pageSize);
+    }
 }
