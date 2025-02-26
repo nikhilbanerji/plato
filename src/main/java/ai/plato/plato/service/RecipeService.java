@@ -143,74 +143,74 @@ public class RecipeService {
     }
 
     // Search for recipes by ingredients
-    public List<RecipeSearchResult> getRecipesByIngredients(
-            String ingredients,
-            Integer number,
-            Integer ranking,
-            Boolean ignorePantry
-    ) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("ingredients", ingredients); // required
-        queryParams.put("number", number.toString()); // defaults to 10 if not entered
-
-        if (ranking != null) {
-            queryParams.put("ranking", ranking.toString());
-        }
-        if (ignorePantry != null) {
-            queryParams.put("ignorePantry", ignorePantry.toString());
-        }
-
-        try {
-            log.info("Fetching recipes by entered ingredients: " + ingredients);
-            List<RecipeSearchResult> searchResults = spoonacularClient.getRecipesByIngredients(queryParams);
-            if (searchResults == null || searchResults.isEmpty()) {
-                throw new NotFoundException("Recipes with ingredients " + ingredients + " not found.");
-            }
-            return searchResults;
-        } catch (HttpClientErrorException.NotFound e) {
-            throw new NotFoundException("Recipe with ingredients " + ingredients + " not found.", e);
-        } catch (Exception e) {
-            log.error("Error calling Spoonacular API for recipe information", e);
-            throw new RuntimeException("Error calling Spoonacular API", e);
-        }
-    }
+//    public List<RecipeSearchResult> getRecipesByIngredients(
+//            String ingredients,
+//            Integer number,
+//            Integer ranking,
+//            Boolean ignorePantry
+//    ) {
+//        Map<String, String> queryParams = new HashMap<>();
+//        queryParams.put("ingredients", ingredients); // required
+//        queryParams.put("number", number.toString()); // defaults to 10 if not entered
+//
+//        if (ranking != null) {
+//            queryParams.put("ranking", ranking.toString());
+//        }
+//        if (ignorePantry != null) {
+//            queryParams.put("ignorePantry", ignorePantry.toString());
+//        }
+//
+//        try {
+//            log.info("Fetching recipes by entered ingredients: " + ingredients);
+//            List<RecipeSearchResult> searchResults = spoonacularClient.getRecipesByIngredients(queryParams);
+//            if (searchResults == null || searchResults.isEmpty()) {
+//                throw new NotFoundException("Recipes with ingredients " + ingredients + " not found.");
+//            }
+//            return searchResults;
+//        } catch (HttpClientErrorException.NotFound e) {
+//            throw new NotFoundException("Recipe with ingredients " + ingredients + " not found.", e);
+//        } catch (Exception e) {
+//            log.error("Error calling Spoonacular API for recipe information", e);
+//            throw new RuntimeException("Error calling Spoonacular API", e);
+//        }
+//    }
 
     // Get random recipes
-    public RecipeInformations getRandomRecipes(
-            Boolean includeNutrition,
-            String includeTags,
-            String excludeTags,
-            Integer number
-    ) {
-        Map<String, String> queryParams = new HashMap<>();
-
-        if (includeNutrition != null) {
-            queryParams.put("ranking", includeNutrition.toString());
-        }
-        if (includeTags != null) {
-            queryParams.put("includeTags", includeTags);
-        }
-        if (excludeTags != null) {
-            queryParams.put("excludeTags", excludeTags);
-        }
-        if (number != null) {
-            queryParams.put("number", number.toString());
-        }
-
-        try {
-            log.info("Fetching {} random recipes", number);
-            RecipeInformations recipeInformations = spoonacularClient.getRandomRecipes(queryParams);
-            if (recipeInformations == null || recipeInformations.recipes() == null ||  recipeInformations.recipes().isEmpty()) {
-                throw new NotFoundException("Recipes not found.");
-            }
-            return recipeInformations;
-        } catch (HttpClientErrorException.NotFound e) {
-            throw new NotFoundException("Recipes not found.", e);
-        } catch (Exception e) {
-            log.error("Error calling Spoonacular API for random recipes", e);
-            throw new RuntimeException("Error calling Spoonacular API", e);
-        }
-    }
+//    public RecipeInformations getRandomRecipes(
+//            Boolean includeNutrition,
+//            String includeTags,
+//            String excludeTags,
+//            Integer number
+//    ) {
+//        Map<String, String> queryParams = new HashMap<>();
+//
+//        if (includeNutrition != null) {
+//            queryParams.put("ranking", includeNutrition.toString());
+//        }
+//        if (includeTags != null) {
+//            queryParams.put("includeTags", includeTags);
+//        }
+//        if (excludeTags != null) {
+//            queryParams.put("excludeTags", excludeTags);
+//        }
+//        if (number != null) {
+//            queryParams.put("number", number.toString());
+//        }
+//
+//        try {
+//            log.info("Fetching {} random recipes", number);
+//            RecipeInformations recipeInformations = spoonacularClient.getRandomRecipes(queryParams);
+//            if (recipeInformations == null || recipeInformations.recipes() == null ||  recipeInformations.recipes().isEmpty()) {
+//                throw new NotFoundException("Recipes not found.");
+//            }
+//            return recipeInformations;
+//        } catch (HttpClientErrorException.NotFound e) {
+//            throw new NotFoundException("Recipes not found.", e);
+//        } catch (Exception e) {
+//            log.error("Error calling Spoonacular API for random recipes", e);
+//            throw new RuntimeException("Error calling Spoonacular API", e);
+//        }
+//    }
 
     // Get recipe information by ID
     public RecipeInformation getRecipeInformation(Integer id) {
@@ -291,7 +291,7 @@ public class RecipeService {
         }
     }
 
-    // Fetch recipes by ingredients.
+    // Fetch recipes by ingredients
     public RecipePage findByIngredients(List<String> ingredients, Integer pageNumber, Integer pageSize, String matchType) {
         // Solr indexing starts from 0 so page number needs to be adjusted
         Integer solrPageNumber = pageNumber - 1;
@@ -322,6 +322,34 @@ public class RecipeService {
 
         try {
             log.info("Fetching " + pageSize + " recipes using " + matchType + " match on solr page " + solrPageNumber + " for ingredients: " + ingredients);
+
+            final QueryResponse response = solrClient.query(query);
+
+            long totalDocs = response.getResults().getNumFound();
+            List<Recipe> recipes = response.getBeans(Recipe.class);
+
+            if (recipes == null || recipes.isEmpty()) {
+                throw new NotFoundException("No recipes found");
+            }
+
+            return new RecipePage(recipes, pageNumber, pageSize, totalDocs);
+        } catch (IOException | SolrServerException e) {
+            throw new RecipeSearchException("Failed to query Solr", e);
+        }
+    }
+
+    // Fetch random recipes by page number and size of page
+    public RecipePage findRandom(Integer pageNumber, Integer pageSize) {
+        // Solr indexing starts from 0 so page number needs to be adjusted
+        Integer solrPageNumber = pageNumber - 1;
+
+        final SolrQuery query = new SolrQuery("*:*");
+        query.setStart(solrPageNumber * pageSize);
+        query.setRows(pageSize);
+        query.addSort("random_" + System.currentTimeMillis(), SolrQuery.ORDER.asc);
+
+        try {
+            log.info("Fetching " +pageSize + " random recipes on solr page " + solrPageNumber);
 
             final QueryResponse response = solrClient.query(query);
 

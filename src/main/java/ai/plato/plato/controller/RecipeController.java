@@ -32,28 +32,28 @@ public class RecipeController {
     }
 
     // Search for recipes by ingredients
-    @GetMapping("/findByIngredients")
-    List<RecipeSearchResult> getRecipesByIngredients (
-            @RequestParam(name = "ingredients", required = true) @NotBlank(message = "Ingredients required") String ingredients,
-            @RequestParam(name = "number", required = false, defaultValue = "10") @Range(min = 1, max = 100) Integer number,
-            @RequestParam(name = "ranking", required = false) @Range(min = 1, max = 2) Integer ranking,
-            @RequestParam(name = "ignorePantry", required = false) Boolean ignorePantry
-    ) {
-        log.info("Controller: Request to fetch recipes by ingredients {}", ingredients);
-        return recipeService.getRecipesByIngredients(ingredients, number, ranking, ignorePantry);
-    }
+//    @GetMapping("/findByIngredients")
+//    List<RecipeSearchResult> getRecipesByIngredients (
+//            @RequestParam(name = "ingredients", required = true) @NotBlank(message = "Ingredients required") String ingredients,
+//            @RequestParam(name = "number", required = false, defaultValue = "10") @Range(min = 1, max = 100) Integer number,
+//            @RequestParam(name = "ranking", required = false) @Range(min = 1, max = 2) Integer ranking,
+//            @RequestParam(name = "ignorePantry", required = false) Boolean ignorePantry
+//    ) {
+//        log.info("Controller: Request to fetch recipes by ingredients {}", ingredients);
+//        return recipeService.getRecipesByIngredients(ingredients, number, ranking, ignorePantry);
+//    }
 
     // Get random recipes
-    @GetMapping("/random")
-    RecipeInformations getRandomRecipes(
-            @RequestParam(name = "includeNutrition", required = false) Boolean includeNutrition,
-            @RequestParam(name = "includeTags", required = false) String includeTags,
-            @RequestParam(name = "excludeTags", required = false) String excludeTags,
-            @RequestParam(name = "number", required = false) @Range(min = 1, max = 100) Integer number
-    ) {
-        log.info("Controller: Request to fetch random recipes");
-        return recipeService.getRandomRecipes(includeNutrition, includeTags, excludeTags, number);
-    }
+//    @GetMapping("/random")
+//    RecipeInformations getRandomRecipes(
+//            @RequestParam(name = "includeNutrition", required = false) Boolean includeNutrition,
+//            @RequestParam(name = "includeTags", required = false) String includeTags,
+//            @RequestParam(name = "excludeTags", required = false) String excludeTags,
+//            @RequestParam(name = "number", required = false) @Range(min = 1, max = 100) Integer number
+//    ) {
+//        log.info("Controller: Request to fetch random recipes");
+//        return recipeService.getRandomRecipes(includeNutrition, includeTags, excludeTags, number);
+//    }
 
     // Get recipe information by ID
     @GetMapping("/{id}/information")
@@ -96,5 +96,15 @@ public class RecipeController {
     ) {
         log.info("Controller: Request to fetch " + pageSize + " recipes with " + matchType + " match on page " + pageNumber + " for ingredients: " + ingredients);
         return recipeService.findByIngredients(ingredients, pageNumber, pageSize, matchType);
+    }
+
+    // Fetch random recipes
+    @GetMapping("/random")
+    RecipePage findRandom(
+            @RequestParam(name = "page", required = false, defaultValue = "1") @Positive Integer pageNumber,
+            @RequestParam(name = "size", required = false, defaultValue = "20") @Range(min = 20, max = 100) Integer pageSize
+    ) {
+        log.info("Controller: Request to fetch " +pageSize + " random recipes on page " + pageNumber);
+        return recipeService.findRandom(pageNumber, pageSize);
     }
 }
