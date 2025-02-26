@@ -9,13 +9,13 @@ public class Recipe {
     private String id;
 
     @Field
-    private String title;
+    private List<String> title;
 
     @Field
     private List<String> ingredients;
 
     @Field
-    private String instructions;
+    private List<String> instructions;
 
     @Field("picture_link")
     private String pictureLink;
@@ -56,7 +56,10 @@ public class Recipe {
     @Field
     private Long views;
 
-    public Recipe(String id, String title, List<String> ingredients, String instructions, String pictureLink,
+    public Recipe() {
+    }
+
+    public Recipe(String id, List<String> title, List<String> ingredients, List<String> instructions, String pictureLink,
                   Integer cookingTime, List<String> cuisines, String difficulty, Long difficultyEasy,
                   Long difficultyMedium, Long difficultyHard, String difficultyUserRated, Long dislikes,
                   Long likes, Integer preparationTime, String uploadedBy, Long views) {
@@ -88,10 +91,10 @@ public class Recipe {
         this.id = id;
     }
 
-    public String getTitle() {
+    public List<String> getTitle() {
         return title;
     }
-    public void setTitle(String title) {
+    public void setTitle(List<String> title) {
         this.title = title;
     }
 
@@ -102,10 +105,10 @@ public class Recipe {
         this.ingredients = ingredients;
     }
 
-    public String getInstructions() {
+    public List<String> getInstructions() {
         return instructions;
     }
-    public void setInstructions(String instructions) {
+    public void setInstructions(List<String> instructions) {
         this.instructions = instructions;
     }
 
