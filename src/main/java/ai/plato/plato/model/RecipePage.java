@@ -19,7 +19,6 @@ public class RecipePage {
     public List<Recipe> getRecipes() {
         return recipes;
     }
-
     public void setRecipes(List<Recipe> recipes) {
         this.recipes = recipes;
     }
@@ -27,7 +26,6 @@ public class RecipePage {
     public Integer getPageNumber() {
         return pageNumber;
     }
-
     public void setPageNumber(Integer pageNumber) {
         this.pageNumber = pageNumber;
     }
@@ -35,7 +33,6 @@ public class RecipePage {
     public Integer getPageSize() {
         return pageSize;
     }
-
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
@@ -43,7 +40,6 @@ public class RecipePage {
     public Long getTotalDocs() {
         return totalDocs;
     }
-
     public void setTotalDocs(Long totalDocs) {
         this.totalDocs = totalDocs;
     }
