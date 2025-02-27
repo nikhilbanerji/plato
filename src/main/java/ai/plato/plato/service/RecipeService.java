@@ -17,17 +17,32 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * RecipeService handles business logic related to recipe management.
+ * It interacts with Solr to fetch, search, and retrieve random recipes.
+ */
 @Service
 public class RecipeService {
 
     private static final Logger log = LoggerFactory.getLogger(RecipeService.class);
     private final SolrClient solrClient;
 
+    /**
+     * Constructs RecipeService with a Solr client.
+     *
+     * @param solrClient The Solr client instance used for querying the index.
+     */
     public RecipeService(SolrClient solrClient) {
         this.solrClient = solrClient;
     }
 
-    // Fetch all recipes by page number and size of page
+    /**
+     * Fetches a paginated list of all available recipes.
+     *
+     * @param pageNumber The page number to retrieve.
+     * @param pageSize The number of recipes per page.
+     * @return A RecipePage containing the requested recipes.
+     */
     public RecipePage findAll(Integer pageNumber, Integer pageSize) {
         // Solr indexing starts from 0 so page number needs to be adjusted
         Integer solrPageNumber = pageNumber - 1;
@@ -55,7 +70,18 @@ public class RecipeService {
         }
     }
 
-    // Fetch recipes
+    /**
+     * Searches for recipes with filters and boost functions.
+     *
+     * @param query Search term.
+     * @param pageNumber Page number.
+     * @param pageSize Results per page.
+     * @param matchTypes Fields to match.
+     * @param uploadedBy Filter by uploader.
+     * @param cookingTimeMin Minimum cooking time.
+     * @param cookingTimeMax Maximum cooking time.
+     * @return A RecipePage with matching recipes.
+     */
     public RecipePage searchRecipes(
             String query,
             Integer pageNumber,
@@ -103,7 +129,13 @@ public class RecipeService {
         }
     }
 
-    // Fetch random recipes by page number and size of page
+    /**
+     * Fetches a paginated list of random recipes.
+     *
+     * @param pageNumber The page number to retrieve.
+     * @param pageSize The number of recipes per page.
+     * @return A RecipePage containing random recipes.
+     */
     public RecipePage findRandom(Integer pageNumber, Integer pageSize) {
         // Solr indexing starts from 0 so page number needs to be adjusted
         Integer solrPageNumber = pageNumber - 1;

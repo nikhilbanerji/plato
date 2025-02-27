@@ -5,6 +5,11 @@ import java.util.Date;
 import java.util.List;
 import org.apache.solr.client.solrj.beans.Field;
 
+/**
+ * Recipe represents a model for storing recipe-related information.
+ * It includes fields such as title, ingredients, cooking time, difficulty, and metadata like likes, dislikes, and views.
+ * The class is annotated with Solr-specific indexing fields to enable search capabilities.
+ */
 public class Recipe {
 
     @Field
@@ -63,9 +68,36 @@ public class Recipe {
     @Field("last_modified")
     private Instant lastModified;
 
+    /**
+     * Default constructor for Recipe.
+     * SolrJ object mapping needs an explicit default constructor because it uses reflection.
+     */
     public Recipe() {
     }
 
+    /**
+     * Parameterized constructor for Recipe.
+     *
+     * @param id Unique recipe identifier.
+     * @param title List of possible titles.
+     * @param ingredients List of ingredients required.
+     * @param instructions Step-by-step preparation instructions.
+     * @param pictureLink URL link to an image of the recipe.
+     * @param cookingTime Estimated cooking time in minutes.
+     * @param cuisines List of cuisines the recipe belongs to.
+     * @param difficulty Difficulty level (easy, medium, hard).
+     * @param difficultyEasy User ratings for easy difficulty.
+     * @param difficultyMedium User ratings for medium difficulty.
+     * @param difficultyHard User ratings for hard difficulty.
+     * @param difficultyUserRated The difficulty level rated by users.
+     * @param dislikes Number of users who disliked the recipe.
+     * @param likes Number of users who liked the recipe.
+     * @param preparationTime Time required for preparation in minutes.
+     * @param uploadedBy Username of the recipe uploader.
+     * @param views Number of times the recipe has been viewed.
+     * @param uploadTimestamp The timestamp when the recipe was uploaded.
+     * @param lastModified The timestamp of the last modification.
+     */
     public Recipe(String id, List<String> title, List<String> ingredients, List<String> instructions,
                   String pictureLink, Integer cookingTime, List<String> cuisines, String difficulty,
                   Long difficultyEasy, Long difficultyMedium, Long difficultyHard, String difficultyUserRated,
@@ -92,8 +124,9 @@ public class Recipe {
         this.lastModified = lastModified;
     }
 
-    // Getters and setters for all fields
-
+    /**
+     * Getter and Setter methods for Recipe attributes.
+     */
     public String getId() {
         return id;
     }
