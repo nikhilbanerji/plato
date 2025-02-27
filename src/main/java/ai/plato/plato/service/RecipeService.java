@@ -2,6 +2,7 @@ package ai.plato.plato.service;
 
 import ai.plato.plato.exception.NotFoundException;
 import ai.plato.plato.exception.RecipeSearchException;
+import ai.plato.plato.helper.RecipeSolrQueryBuilder;
 import ai.plato.plato.model.Recipe;
 import ai.plato.plato.model.RecipePage;
 import org.apache.solr.client.solrj.SolrClient;
@@ -11,13 +12,10 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Service
 public class RecipeService {
@@ -57,40 +55,41 @@ public class RecipeService {
         }
     }
 
-    // Fetch recipes by ingredients
-    public RecipePage findByIngredients(List<String> ingredients, Integer pageNumber, Integer pageSize, String matchType) {
+    // Fetch recipes
+    public RecipePage searchRecipes(
+            String query,
+            Integer pageNumber,
+            Integer pageSize,
+            Set<String> matchTypes,
+            String uploadedBy,
+            Integer cookingTimeMin,
+            Integer cookingTimeMax) {
         // Solr indexing starts from 0 so page number needs to be adjusted
         Integer solrPageNumber = pageNumber - 1;
 
-        String queryString;
-        switch(matchType) {
-            case "exact":
-                // Match recipes that have ALL ingredients
-                queryString = ingredients.stream()
-                        .map(ingredient -> "ingredients:\"" + ingredient + "\"")
-                        .collect(Collectors.joining(" AND "));
-                break;
-            case "partial":
-                // Match recipes that have MOST ingredients
-                queryString = "{!edismax qf=ingredients pf=ingredients}" + String.join(" ", ingredients);
-                break;
-            default:
-                // Return recipes that contain ANY of the ingredients
-                queryString = ingredients.stream()
-                        .map(ingredient -> "ingredients:\"" + ingredient + "\"")
-                        .collect(Collectors.joining(" OR "));
-                break;
+        // Define boost functions for popularity/relevance: views, likes, like/dislike ratio
+        String boostFunctions = "pow(log(sum(views,1)),0.5) pow(log(sum(likes,1)),1.0) pow(div(likes,sum(likes,dislikes,1)),1.5)";
+
+        // Build Solr query using builder pattern
+        RecipeSolrQueryBuilder builder = new RecipeSolrQueryBuilder(query)
+                .applyMatchTypes(matchTypes)
+                .addBoostFunctions(boostFunctions)
+                .setStartAndRows(solrPageNumber * pageSize, pageSize);
+
+        // Add additional filters (cooking time, prep time, creator, etc.)
+        if (uploadedBy != null) {
+            builder.addFilter("uploaded_by:\"" + uploadedBy + "\"");
+        }
+        if (cookingTimeMax != null) {
+            builder.addFilter("cooking_time:[" + cookingTimeMin + " TO " + cookingTimeMax + "]");
         }
 
-        final SolrQuery query = new SolrQuery(queryString);
-        query.setStart(solrPageNumber * pageSize);
-        query.setRows(pageSize);
+        final SolrQuery solrQuery = builder.build();
 
         try {
-            log.info("Fetching " + pageSize + " recipes using " + matchType + " match on solr page " + solrPageNumber + " for ingredients: " + ingredients);
+            log.info("RecipeService: Searching for recipes");
 
-            final QueryResponse response = solrClient.query(query);
-
+            final QueryResponse response = solrClient.query(solrQuery);
             long totalDocs = response.getResults().getNumFound();
             List<Recipe> recipes = response.getBeans(Recipe.class);
 

@@ -2,15 +2,15 @@ package ai.plato.plato.controller;
 
 import ai.plato.plato.model.*;
 import ai.plato.plato.service.RecipeService;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.hibernate.validator.constraints.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/plato/recipes")
@@ -32,16 +32,26 @@ public class RecipeController {
         return recipeService.findAll(pageNumber, pageSize);
     }
 
-    // Search for recipes by ingredients
-    @GetMapping("/searchByIngredients")
-    RecipePage findByIngredients (
-            @RequestParam(name = "ingredients", required = true) @NotEmpty(message = "Ingredients required") List<String> ingredients,
+    // Search for recipes
+    @GetMapping("/search")
+    RecipePage searchRecipes(
+            @RequestParam(name = "query", required = true) @NotEmpty(message = "Query required") String query,
             @RequestParam(name = "page", required = false, defaultValue = "1") @Positive Integer pageNumber,
             @RequestParam(name = "size", required = false, defaultValue = "20") @Range(min = 20, max = 100) Integer pageSize,
-            @RequestParam(name = "matchType", required = false, defaultValue = "partial") String matchType
-    ) {
-        log.info("Controller: Request to fetch " + pageSize + " recipes with " + matchType + " match on page " + pageNumber + " for ingredients: " + ingredients);
-        return recipeService.findByIngredients(ingredients, pageNumber, pageSize, matchType);
+            @RequestParam(name = "matchTypes", required = false) Set<String> matchTypes,
+            @RequestParam(name = "uploadedBy", required = false) String uploadedBy,
+            @RequestParam(name = "minCookingTime", required = false) @PositiveOrZero Integer minCookingTime,
+            @RequestParam(name = "maxCookingTime", required = false) @PositiveOrZero Integer maxCookingTime) {
+        log.info("Controller: Request to fetch " + pageSize + " recipes on page " + pageNumber
+                + "with matches on " + matchTypes + " for query: " + query);
+        return recipeService.searchRecipes(
+                query,
+                pageNumber,
+                pageSize,
+                matchTypes,
+                uploadedBy,
+                minCookingTime,
+                maxCookingTime);
     }
 
     // Fetch random recipes
