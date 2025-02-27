@@ -1,5 +1,7 @@
 package ai.plato.plato.model;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import org.apache.solr.client.solrj.beans.Field;
 
@@ -56,13 +58,19 @@ public class Recipe {
     @Field
     private Long views;
 
+    private Instant uploadTimestamp;
+
+    @Field("last_modified")
+    private Instant lastModified;
+
     public Recipe() {
     }
 
-    public Recipe(String id, List<String> title, List<String> ingredients, List<String> instructions, String pictureLink,
-                  Integer cookingTime, List<String> cuisines, String difficulty, Long difficultyEasy,
-                  Long difficultyMedium, Long difficultyHard, String difficultyUserRated, Long dislikes,
-                  Long likes, Integer preparationTime, String uploadedBy, Long views) {
+    public Recipe(String id, List<String> title, List<String> ingredients, List<String> instructions,
+                  String pictureLink, Integer cookingTime, List<String> cuisines, String difficulty,
+                  Long difficultyEasy, Long difficultyMedium, Long difficultyHard, String difficultyUserRated,
+                  Long dislikes, Long likes, Integer preparationTime, String uploadedBy, Long views,
+                  Instant uploadTimestamp, Instant lastModified) {
         this.id = id;
         this.title = title;
         this.ingredients = ingredients;
@@ -80,9 +88,11 @@ public class Recipe {
         this.preparationTime = preparationTime;
         this.uploadedBy = uploadedBy;
         this.views = views;
+        this.uploadTimestamp = uploadTimestamp;
+        this.lastModified = lastModified;
     }
 
-    // Getters and setters
+    // Getters and setters for all fields
 
     public String getId() {
         return id;
@@ -201,5 +211,24 @@ public class Recipe {
     }
     public void setViews(Long views) {
         this.views = views;
+    }
+
+    public Instant getUploadTimestamp() {
+        return uploadTimestamp;
+    }
+    @Field("upload_timestamp")
+    public void setUploadTimestamp(Date uploadTimestamp) {
+        this.uploadTimestamp = (uploadTimestamp == null) ? null : uploadTimestamp.toInstant();
+    }
+    // Convenience method for setting with Instant
+    public void updateUploadTimestamp(Instant instant) {
+        this.uploadTimestamp = instant;
+    }
+
+    public Instant getLastModified() {
+        return lastModified;
+    }
+    public void setLastModified(Instant lastModified) {
+        this.lastModified = lastModified;
     }
 }
